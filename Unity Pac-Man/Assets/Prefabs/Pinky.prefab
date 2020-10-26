@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 4629148186200827295}
   - component: {fileID: 1118962312462650615}
   - component: {fileID: -2668849618092418071}
-  - component: {fileID: -326959617377198878}
   - component: {fileID: 8372850261209570768}
   m_Layer: 0
   m_Name: Pinky
@@ -97,21 +96,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0c00f71d3fdeee4aaac89967e2a1864, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentState: 0
+  Target: {fileID: 0}
   row: 0
   column: 0
---- !u!114 &-326959617377198878
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 623899149264483022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a240d90691f513a40b2bedb518ec64da, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CurrentState: 0
 --- !u!58 &8372850261209570768
 CircleCollider2D:
   m_ObjectHideFlags: 0

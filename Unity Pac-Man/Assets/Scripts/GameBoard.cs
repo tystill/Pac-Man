@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameBoard : MonoBehaviour
@@ -21,6 +22,7 @@ public class GameBoard : MonoBehaviour
     public GameObject PinkyPrefab;
     public GameObject InkyPrefab;
     public GameObject ClydePrefab;
+    public int pelletCount = 244;
 
 
     private void Start()
@@ -31,7 +33,7 @@ public class GameBoard : MonoBehaviour
         InstantiatePrefabs();
     }
 
-    public void InitializeBoard()
+    void InitializeBoard()
     {
         board = new TileContents[rows, cols];
         for (int j = 0; j < cols; j++)
@@ -186,7 +188,7 @@ public class GameBoard : MonoBehaviour
     }
 
 
-    void InstantiatePrefabs()
+    public void InstantiatePrefabs()
     {
         for (int j = 0; j < cols; j++)
         {
@@ -205,6 +207,7 @@ public class GameBoard : MonoBehaviour
                         Node temp = pelletGO.GetComponent<Node>();
                         temp.row = j;
                         temp.column = i;
+                        temp.Type = Node.NodeType.Pellet;
 
                         pelletGO.transform.parent = row.transform;
                         pelletGO.name = "Pellet[" + j + ", " + i + "]";
@@ -212,22 +215,29 @@ public class GameBoard : MonoBehaviour
 
                         GameObjects[i, j] = pelletGO;
                         break;
+
                     case TileContents.PowerUp:
+                        //Debug.Log("Made PowerUp");
                         GameObject powerUpGO = Instantiate(PowerUpPrefab, new Vector3(j, -i, 0), Quaternion.identity);
                         temp = powerUpGO.GetComponent<Node>();
                         temp.row = j;
                         temp.column = i;
+                        temp.Type = Node.NodeType.PowerUp;
+
                         powerUpGO.transform.parent = row.transform;
                         powerUpGO.name = "PowerUp[" + j + ", " + i + "]";
 
 
                         GameObjects[i, j] = powerUpGO;
                         break;
+
                     case TileContents.InvisibleNode:
                         GameObject invisibleNodeGO = Instantiate(InvisibleNodePrefab, new Vector3(j, -i, 0), Quaternion.identity);
                         temp = invisibleNodeGO.GetComponent<Node>();
                         temp.row = j;
                         temp.column = i;
+                        temp.Type = Node.NodeType.Invisible;
+
                         invisibleNodeGO.transform.parent = row.transform;
                         invisibleNodeGO.name = "InvisibleNode[" + j + ", " + i + "]";
 
@@ -302,7 +312,7 @@ public class GameBoard : MonoBehaviour
                 validDirections.Add(Node.Direction.Left);
             }
         }
-        if (currentNode.row + 1 < rows)
+        if (currentNode.row + 1 < cols)
         {
             if (board[currentNode.column, currentNode.row + 1] != TileContents.Empty)
             {
@@ -316,7 +326,7 @@ public class GameBoard : MonoBehaviour
                 validDirections.Add(Node.Direction.Up);
             }
         }
-        if (currentNode.column + 1 < cols)
+        if (currentNode.column + 1 < rows)
         {
             if (board[currentNode.column + 1, currentNode.row] != TileContents.Empty)
             {
@@ -328,13 +338,75 @@ public class GameBoard : MonoBehaviour
     }
 
 
-    public float CalculateDistance(Node node1, Node node2)
+    public Node GetNodeInDirection(Node currentNode, Node.Direction dir)
+    {
+        
+        if (currentNode.row - 1 >= 0 && dir == Node.Direction.Left)
+        {
+            if (board[currentNode.column, currentNode.row - 1] != TileContents.Empty)
+            {
+                return GameObjects[currentNode.column, currentNode.row - 1].GetComponent<Node>();
+
+            }
+        }
+        if (currentNode.row + 1 < cols && dir == Node.Direction.Right)
+        {
+            if (board[currentNode.column, currentNode.row + 1] != TileContents.Empty)
+            {
+                return GameObjects[currentNode.column, currentNode.row + 1].GetComponent<Node>();
+            }
+        }
+        if (currentNode.column - 1 >= 0 && dir == Node.Direction.Up)
+        {
+            if (board[currentNode.column - 1, currentNode.row] != TileContents.Empty)
+            {
+                return GameObjects[currentNode.column - 1, currentNode.row].GetComponent<Node>();
+            }
+        }
+        if (currentNode.column + 1 < rows && dir == Node.Direction.Down)
+        {
+            if (board[currentNode.column + 1, currentNode.row] != TileContents.Empty)
+            {
+                return GameObjects[currentNode.column + 1, currentNode.row].GetComponent<Node>();
+            }
+        }
+
+        return null;
+    }
+
+
+    public static float CalculateDistance(Node node1, Node node2)
     {
 
         int rowDelt = node1.row - node2.row;
         int colDelt = node1.column - node2.column;
         return (float)Math.Sqrt(rowDelt * rowDelt + colDelt * colDelt);
 
+    }
+
+    public bool IsLevelComplete()
+    {
+        return pelletCount == 0;
+
+    }
+
+    public void ClearGameObjects()
+    {
+        foreach(Transform transform in transform)
+        {
+            Destroy(transform.gameObject);
+        }
+    }
+
+
+    //for testing
+    public void DeletePellets()
+    {
+        Node[] nodes = GetComponentsInChildren<Node>();
+        foreach(Node n in nodes)
+        {
+            n.Type = Node.NodeType.Invisible;
+        }
     }
 
 }

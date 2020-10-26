@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.VR;
 using UnityEngine.XR.WSA.Input;
 
@@ -11,17 +12,21 @@ public class PacMan : MonoBehaviour
     private float speed = 3;
     private Vector2 direction = Vector2.zero;
     [SerializeField] private Node currentNode;
-    private Node destinationNode;
+    //private Node destinationNode;
     private Node.Direction facing;
     private Node.Direction queuedDirection;
     private bool startedMoving = false;
     private bool inNode = false;
+    private Node startingNode;
+    public static PacMan instance;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        currentNode = GameBoard.instance.GameObjects[22, 13].GetComponent<Node>();
+        instance = this;
+        startingNode = GameBoard.instance.GameObjects[22, 13].GetComponent<Node>();
+        currentNode = startingNode;
     }
 
     // Update is called once per frame
@@ -184,7 +189,40 @@ public class PacMan : MonoBehaviour
                 currentNode = collision.gameObject.GetComponent<Node>();
 
                 //can put hide pellet and increase score here
-                collision.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+                SpriteRenderer sprite = collision.gameObject.GetComponent<SpriteRenderer>();
+                if (sprite)
+                {
+                    
+                    sprite.enabled = false;
+                    Game.instance.Score += currentNode.Type == Node.NodeType.Pellet? 10:50;
+                    GameBoard.instance.pelletCount--;
+
+                    if(currentNode.Type == Node.NodeType.PowerUp)
+                    {
+                        Debug.Log("found powerUp");
+                        if(Game.instance.Blinky.CurrentState != Ghost.State.Idle)
+                        {
+                            Game.instance.Blinky.BecomeFrightened();
+
+                        }
+                        if (Game.instance.Pinky.CurrentState != Ghost.State.Idle)
+                        {
+                            Game.instance.Pinky.BecomeFrightened();
+
+                        }
+                        if (Game.instance.Inky.CurrentState != Ghost.State.Idle)
+                        {
+                            Game.instance.Inky.BecomeFrightened();
+
+                        }
+                        if (Game.instance.Clyde.CurrentState != Ghost.State.Idle)
+                        {
+                            Game.instance.Clyde.BecomeFrightened();
+
+                        }
+                    }
+                }
+                currentNode.Type = Node.NodeType.Invisible;
 
             }
             GameBoard.instance.PacRow = currentNode.row;
@@ -200,15 +238,34 @@ public class PacMan : MonoBehaviour
             {
                 Die();
             }
+            else if(hit.CurrentState == Ghost.State.Frightened)
+            {
+                hit.Die();
+            }
         }
 
     }
 
     private void Die(){
+        Debug.Log("Got into Die");
+        Game.instance.Lives--;
+        //play die animation
+
+
+
+        //respawn
+        Respawn();
 
         }
-        
 
+    public void Respawn()
+    {
+        transform.position = startingNode.transform.position;
+        startedMoving = false;
+        facing = Node.Direction.Right;
+
+        transform.localRotation = Quaternion.Euler(0, 0, 360);
+    }
 
 
 }

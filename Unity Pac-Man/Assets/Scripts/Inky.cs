@@ -2,20 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Inky : MonoBehaviour
+public class Inky : Ghost
 {
 
-    public int row;
-    public int column;
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+
+
 
     // Update is called once per frame
     void Update()
     {
-        
+        GetTarget();
+
+        timer += Time.deltaTime;
+        if (timer >= 1f)
+        {
+            UpdatePosition();
+            Move();
+            timer = 0;
+        }
+    }
+
+    void GetTarget()
+    {
+        Target = GameBoard.instance.GameObjects[GameBoard.instance.PacCol, GameBoard.instance.PacRow].GetComponent<Node>();
     }
 }
