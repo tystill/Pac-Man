@@ -1,28 +1,32 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Ghost : MonoBehaviour
+public abstract class Ghost : MonoBehaviour
 {
 
     public enum State {Idle, Chase, Scatter, Frightened, Dead};
     public State CurrentState;
     public Node CurrentNode { get;  private set; } //properties, public getting, private setting
-    public Node Target;
-    [SerializeField] private Node.Direction facing;
+    public Vector3 Target;
+    public Node.Direction facing;
     private Node Optimal;
     public float timer;
     public int row;
     public int column;
+    public Vector3 scatterTarget;
+    public Vector3 startingPosition;
+
+    public abstract void SetChaseTarget();
 
 
     // Start is called before the first frame update
-    void Start()
+    public virtual void Start()
     {
 
         CurrentNode = GameBoard.instance.GameObjects[10, 13].GetComponent<Node>();
         Move();
+        startingPosition = transform.position;
 
 
     }
@@ -53,7 +57,7 @@ public class Ghost : MonoBehaviour
             {
 
                 Node testNode = GameBoard.instance.GetNodeInDirection(CurrentNode, dir);
-                float testDistance = GameBoard.CalculateDistance(testNode, Target);
+                float testDistance = Vector3.Distance(testNode.transform.position, Target);
                 
                 if(testDistance < distance)
                 {
@@ -103,6 +107,28 @@ public class Ghost : MonoBehaviour
     public void Die()
     {
         CurrentState = State.Dead;
+    }
+
+    public void GetTarget()
+    {
+
+        switch (CurrentState)
+        {
+
+            case State.Chase:
+                SetChaseTarget();
+                break;
+            case State.Scatter:
+                Target = scatterTarget;
+                break;
+            case State.Frightened:
+                List<Node.Direction> directions = GameBoard.instance.GetValidDirections(CurrentNode, facing, false);
+                Target = GameBoard.instance.GetNodeInDirection(CurrentNode, directions[Random.Range(0, directions.Count)]).transform.position;
+                break;
+            case State.Dead:
+                Target = startingPosition;
+                break;
+        }
     }
 
 

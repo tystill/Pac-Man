@@ -5,7 +5,11 @@ using UnityEngine;
 public class Pinky : Ghost
 {
 
-
+    public override void Start()
+    {
+        base.Start();
+        scatterTarget = GameBoard.instance.GameObjects[0, 0].transform.position + new Vector3(-1, 1, 0);
+    }
 
 
     // Update is called once per frame
@@ -22,9 +26,10 @@ public class Pinky : Ghost
         }
     }
 
-    void GetTarget()
+
+    public override void SetChaseTarget()
     {
-        //use pacmans world space 4 in front of that if I change get distance to take a position instead of a second node
-        Target = GameBoard.instance.GameObjects[GameBoard.instance.PacCol, GameBoard.instance.PacRow].GetComponent<Node>();
+
+        Target = PacMan.instance.transform.position + 4 * Node.DirectionToVector(PacMan.instance.facing);
     }
 }

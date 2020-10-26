@@ -24,6 +24,8 @@ public class Game : MonoBehaviour
         Inky = GameBoard.instance.GameObjects[13, 13].GetComponent<Ghost>();
         Clyde = GameBoard.instance.GameObjects[13, 14].GetComponent<Ghost>();
 
+        ((Inky)Inky).BlinkyReference = (Blinky)Blinky;
+
         StartCoroutine(Spawn());
 
     }
@@ -64,6 +66,12 @@ public class Game : MonoBehaviour
             LevelComplete();
         }
 
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            //Debug.Log("quitting");
+            Application.Quit();
+        }
 
     }
 

@@ -6,10 +6,12 @@ public class Node : MonoBehaviour
 {
 
     public enum Direction {None,Left,Right,Up,Down};
-    public enum NodeType {Invisible, Pellet, PowerUp};
+    public enum NodeType {Invisible, Pellet, PowerUp, Portal};
     public NodeType Type;
     public int row;
     public int column;
+    public Direction PortalDirection;
+    public Node PortalDestination;
 
 
     void Start()
@@ -35,6 +37,26 @@ public class Node : MonoBehaviour
 
         }
         return Direction.None;
+    }
+
+
+    public static Vector3 DirectionToVector(Direction d)
+    {
+        switch (d)
+        {
+
+            case Direction.Left:
+                return Vector3.left;
+            case Direction.Right:
+                return Vector3.right;
+            case Direction.Up:
+                return Vector3.up;
+            case Direction.Down:
+                return Vector3.down;
+
+        }
+        return Vector3.zero;
+
     }
 
 }

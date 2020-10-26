@@ -6,8 +6,11 @@ using UnityEngine;
 public class Blinky : Ghost
 {
 
-
-
+    public override void Start()
+    {
+        base.Start();
+        scatterTarget = GameBoard.instance.GameObjects[0, 25].transform.position + new Vector3(1, 1, 0);
+    }
 
 
     // Update is called once per frame
@@ -24,8 +27,9 @@ public class Blinky : Ghost
         }
     }
 
-    void GetTarget()
+
+    public override void SetChaseTarget()
     {
-        Target = GameBoard.instance.GameObjects[GameBoard.instance.PacCol, GameBoard.instance.PacRow].GetComponent<Node>();
+        Target = PacMan.instance.transform.position;
     }
 }

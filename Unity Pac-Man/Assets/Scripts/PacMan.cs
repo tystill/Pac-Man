@@ -1,19 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
-using UnityEngine.VR;
-using UnityEngine.XR.WSA.Input;
+
 
 public class PacMan : MonoBehaviour
 {
 
-    private float speed = 3;
+    private float speed = 3f;
     private Vector2 direction = Vector2.zero;
     [SerializeField] private Node currentNode;
     //private Node destinationNode;
-    private Node.Direction facing;
+    public Node.Direction facing;
     private Node.Direction queuedDirection;
     private bool startedMoving = false;
     private bool inNode = false;
@@ -42,77 +39,119 @@ public class PacMan : MonoBehaviour
 
     void ChangeDirection()
     {
+        QueuedDirection();
         int i = 0;
         foreach (Node.Direction dir in GameBoard.instance.GetValidDirections(currentNode))
         {
 
 
-            if ((Input.GetKeyDown("k") /*|| Input.GetAxis("horizontal") > 0*/) && (dir == Node.Direction.Right) && facing != Node.Direction.Right)
+            if (((Input.GetKeyDown("k") /*|| Input.GetAxis("horizontal") > 0*/) && (dir == Node.Direction.Right) && facing != Node.Direction.Right)
+                ||(queuedDirection == Node.Direction.Right) && (dir == Node.Direction.Right))
             {
                 Debug.Log("pressed right");
-                queuedDirection = Node.Direction.Right;
+
                 if (!startedMoving)
                 {
                     facing = Node.Direction.Right;
                     startedMoving = true;
                 }
-                if (inNode)
+                if (inNode && queuedDirection != Node.Direction.None)
                 {
                     facing = queuedDirection;
+                    //transform.position = GameBoard.instance.GetNodeInDirection(currentNode,dir).transform.position;
+                    transform.position = currentNode.transform.position;
                 }
                 //currentNode = currentNode.neighbors[i];
                 transform.localRotation = Quaternion.Euler(0, 0, 360);
-
+                queuedDirection = Node.Direction.None;
 
             }
-            else if ((Input.GetKeyDown("j") /*|| Input.GetAxis("horizontal") < 0*/) && (dir == Node.Direction.Left) && facing != Node.Direction.Left)
+            else if (((Input.GetKeyDown("j") /*|| Input.GetAxis("horizontal") < 0*/) && (dir == Node.Direction.Left) && facing != Node.Direction.Left)
+                            || (queuedDirection == Node.Direction.Left) && (dir == Node.Direction.Left))
             {
                 Debug.Log("pressed left");
-                queuedDirection = Node.Direction.Left;
                 if (!startedMoving)
                 {
                     facing = Node.Direction.Left;
                     startedMoving = true;
                 }
-                if (inNode)
+                if (inNode && queuedDirection != Node.Direction.None)
                 {
                     facing = queuedDirection;
+                    transform.position = currentNode.transform.position;
+
+
                 }
                 //currentNode = currentNode.neighbors[i];
                 transform.localRotation = Quaternion.Euler(0, 0, 180);
+                queuedDirection = Node.Direction.None;
 
 
             }
-            else if ((Input.GetKeyDown("i") /*|| Input.GetAxis("vertical") > 0*/) && (dir == Node.Direction.Up) && facing != Node.Direction.Up)
+            else if (((Input.GetKeyDown("i") /*|| Input.GetAxis("vertical") > 0*/) && (dir == Node.Direction.Up) && facing != Node.Direction.Up)
+                            || (queuedDirection == Node.Direction.Up) && (dir == Node.Direction.Up))
             {
                 Debug.Log("pressed up");
-                queuedDirection = Node.Direction.Up;
 
-                if (inNode)
+                if (inNode && queuedDirection != Node.Direction.None)
                 {
                     facing = queuedDirection;
+                    transform.position = currentNode.transform.position;
+
                 }
 
                 //currentNode = currentNode.neighbors[i];
                 transform.localRotation = Quaternion.Euler(0, 0, 90);
+                queuedDirection = Node.Direction.None;
 
 
             }
-            else if ((Input.GetKeyDown("m") /*|| Input.GetAxis("vertical") < 0*/) && (dir == Node.Direction.Down) && facing != Node.Direction.Down)
+            else if (((Input.GetKeyDown("m") /*|| Input.GetAxis("vertical") < 0*/) && (dir == Node.Direction.Down) && facing != Node.Direction.Down)
+                            || (queuedDirection == Node.Direction.Down) && (dir == Node.Direction.Down))
             {
                 Debug.Log("pressed down");
-                queuedDirection = Node.Direction.Down;
 
-                if (inNode)
+                if (inNode && queuedDirection != Node.Direction.None)
                 {
                     facing = queuedDirection;
+                    transform.position = currentNode.transform.position;
+
                 }
                 //currentNode = currentNode.neighbors[i];
                 transform.localRotation = Quaternion.Euler(0, 0, 270);
+                queuedDirection = Node.Direction.None;
 
 
             }
             i++;
+        }
+    }
+
+
+    void QueuedDirection()
+    {
+        if (Input.GetKeyDown("k") /*|| Input.GetAxis("horizontal") > 0*/ )
+        {
+            queuedDirection = Node.Direction.Right;
+
+
+        }
+        else if (Input.GetKeyDown("j") /*|| Input.GetAxis("horizontal") < 0*/)
+        {
+            
+            queuedDirection = Node.Direction.Left;
+         
+        }
+        else if (Input.GetKeyDown("i") /*|| Input.GetAxis("vertical") > 0*/)
+        {
+            
+            queuedDirection = Node.Direction.Up;
+
+        }
+        else if (Input.GetKeyDown("m") /*|| Input.GetAxis("vertical") < 0*/)
+        {
+            queuedDirection = Node.Direction.Down;
+
         }
     }
 
@@ -170,16 +209,20 @@ public class PacMan : MonoBehaviour
         if (collision.gameObject.tag == "Node")
         {
             //Debug.Log("Found Node");
+            Node tempNode = collision.gameObject.GetComponent<Node>();
+
             inNode = true;
-            facing = queuedDirection;
-            Portal portal = collision.gameObject.GetComponent<Portal>();
-            if (portal)
+            if (GameBoard.instance.GetValidDirections(tempNode).Contains(queuedDirection))
             {
-                if (facing == portal.direction)
+                facing = queuedDirection;
+            }
+            if (tempNode.Type == Node.NodeType.Portal)
+            {
+                if (facing == tempNode.PortalDirection)
                 {
                     Debug.Log("Found Portal");
-                    transform.position = portal.Destination.transform.position;
-                    currentNode = portal.Destination.GetComponent<Node>();
+                    transform.position = tempNode.PortalDestination.transform.position;
+                    currentNode = tempNode.PortalDestination;
                 }
 
             }
@@ -195,7 +238,10 @@ public class PacMan : MonoBehaviour
                     
                     sprite.enabled = false;
                     Game.instance.Score += currentNode.Type == Node.NodeType.Pellet? 10:50;
-                    GameBoard.instance.pelletCount--;
+                    if ((currentNode.Type == Node.NodeType.PowerUp) || (currentNode.Type == Node.NodeType.Pellet))
+                    {
+                        GameBoard.instance.pelletCount--;
+                    }
 
                     if(currentNode.Type == Node.NodeType.PowerUp)
                     {

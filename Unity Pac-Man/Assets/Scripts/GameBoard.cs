@@ -7,7 +7,7 @@ using UnityEngine;
 public class GameBoard : MonoBehaviour
 {
 
-    public enum TileContents { Empty, Pellet, PowerUp, InvisibleNode };
+    public enum TileContents { Empty, Pellet, PowerUp, InvisibleNode, Portal };
     [SerializeField] private TileContents[,] board;
     private int rows = 29;
     private int cols = 26;
@@ -185,6 +185,9 @@ public class GameBoard : MonoBehaviour
         board[2, 25] = TileContents.PowerUp;
         board[22, 0] = TileContents.PowerUp;
         board[22, 25] = TileContents.PowerUp;
+        board[13, 0] = TileContents.Portal;
+        board[13, 25] = TileContents.Portal;
+
     }
 
 
@@ -244,6 +247,21 @@ public class GameBoard : MonoBehaviour
 
                         GameObjects[i, j] = invisibleNodeGO;
                         break;
+                    case TileContents.Portal:
+                        GameObject portalGO = Instantiate(InvisibleNodePrefab, new Vector3(j, -i, 0), Quaternion.identity);
+                        temp = portalGO.GetComponent<Node>();
+                        temp.row = j;
+                        temp.column = i;
+                        temp.Type = Node.NodeType.Portal;
+                        temp.PortalDirection = temp.transform.position.x == 0 ? Node.Direction.Left : Node.Direction.Right;
+
+                        portalGO.transform.parent = row.transform;
+                        portalGO.name = "Portal[" + j + ", " + i + "]";
+
+
+                        GameObjects[i, j] = portalGO;
+                        break;
+
 
 
                 }
@@ -252,6 +270,16 @@ public class GameBoard : MonoBehaviour
             }
 
         }
+
+        Node portal1 = GameObjects[13, 0].GetComponent<Node>();
+        Node portal2 = GameObjects[13, 25].GetComponent<Node>();
+        portal1.PortalDestination = portal2;
+        portal2.PortalDestination = portal1;
+
+
+
+
+
         int tempCol = 13;
         int tempRow = 11;
 
@@ -302,33 +330,37 @@ public class GameBoard : MonoBehaviour
     }
 
 
-    public List<Node.Direction> GetValidDirections(Node currentNode)
+    public List<Node.Direction> GetValidDirections(Node currentNode, Node.Direction facing = Node.Direction.None, bool includeOpposite = true)
     {
         List<Node.Direction> validDirections = new List<Node.Direction>();
         if (currentNode.row - 1 >= 0)
         {
-            if (board[currentNode.column, currentNode.row - 1] != TileContents.Empty)
+            if (board[currentNode.column, currentNode.row - 1] != TileContents.Empty
+                && (includeOpposite || Node.OppositeDirection(facing) != Node.Direction.Left))
             {
                 validDirections.Add(Node.Direction.Left);
             }
         }
         if (currentNode.row + 1 < cols)
         {
-            if (board[currentNode.column, currentNode.row + 1] != TileContents.Empty)
+            if (board[currentNode.column, currentNode.row + 1] != TileContents.Empty
+                && (includeOpposite || Node.OppositeDirection(facing) != Node.Direction.Right))
             {
                 validDirections.Add(Node.Direction.Right);
             }
         }
         if (currentNode.column - 1 >= 0)
         {
-            if (board[currentNode.column - 1, currentNode.row] != TileContents.Empty)
+            if (board[currentNode.column - 1, currentNode.row] != TileContents.Empty
+                && (includeOpposite || Node.OppositeDirection(facing) != Node.Direction.Up))
             {
                 validDirections.Add(Node.Direction.Up);
             }
         }
         if (currentNode.column + 1 < rows)
         {
-            if (board[currentNode.column + 1, currentNode.row] != TileContents.Empty)
+            if (board[currentNode.column + 1, currentNode.row] != TileContents.Empty
+                && (includeOpposite || Node.OppositeDirection(facing) != Node.Direction.Down))
             {
                 validDirections.Add(Node.Direction.Down);
             }
