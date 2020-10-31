@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 8583293754453876249}
   - component: {fileID: 3190389695605059862}
   - component: {fileID: 8230514243450479776}
+  - component: {fileID: 3140607301395988710}
   m_Layer: 0
   m_Name: Clyde
   m_TagString: Ghost
@@ -97,9 +98,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentState: 0
-  Target: {fileID: 0}
+  Target: {x: 0, y: 0, z: 0}
+  facing: 0
   row: 0
   column: 0
+  scatterTarget: {x: 0, y: 0, z: 0}
+  startingPosition: {x: 0, y: 0, z: 0}
+  speed: 4
 --- !u!58 &8230514243450479776
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -116,3 +121,22 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 2
+--- !u!95 &3140607301395988710
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 896130487734920837}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e9f3e44edfa18dd47bff4eb14d7a143b, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

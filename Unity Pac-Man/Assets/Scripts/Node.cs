@@ -12,6 +12,7 @@ public class Node : MonoBehaviour
     public int column;
     public Direction PortalDirection;
     public Node PortalDestination;
+    public AudioSource Eat;
 
 
     void Start()

@@ -12,19 +12,7 @@ public class Pinky : Ghost
     }
 
 
-    // Update is called once per frame
-    void Update()
-    {
-        GetTarget();
 
-        timer += Time.deltaTime;
-        if (timer >= 1f)
-        {
-            UpdatePosition();
-            Move();
-            timer = 0;
-        }
-    }
 
 
     public override void SetChaseTarget()

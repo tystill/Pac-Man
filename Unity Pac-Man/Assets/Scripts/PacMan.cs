@@ -6,7 +6,7 @@ using UnityEngine;
 public class PacMan : MonoBehaviour
 {
 
-    private float speed = 3f;
+    private float speed = 4f;
     private Vector2 direction = Vector2.zero;
     [SerializeField] private Node currentNode;
     //private Node destinationNode;
@@ -16,6 +16,12 @@ public class PacMan : MonoBehaviour
     private bool inNode = false;
     private Node startingNode;
     public static PacMan instance;
+    private Animator Animator;
+    public bool dead = false;
+    public AudioSource DeathSound;
+    //public AudioClip[] AudioClips;
+    public int ghostsEaten = 0;
+
 
 
     // Start is called before the first frame update
@@ -24,16 +30,23 @@ public class PacMan : MonoBehaviour
         instance = this;
         startingNode = GameBoard.instance.GameObjects[22, 13].GetComponent<Node>();
         currentNode = startingNode;
+        Animator = GetComponent<Animator>();
+        Animator.speed = .5f;
+
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        ChangeDirection();
-
-        if (startedMoving)
+        if (!dead)
         {
-            Move();
+            ChangeDirection();
+
+            if (startedMoving)
+            {
+                Move();
+            }
         }
     }
 
@@ -45,13 +58,14 @@ public class PacMan : MonoBehaviour
         {
 
 
-            if (((Input.GetKeyDown("k") /*|| Input.GetAxis("horizontal") > 0*/) && (dir == Node.Direction.Right) && facing != Node.Direction.Right)
-                ||(queuedDirection == Node.Direction.Right) && (dir == Node.Direction.Right))
+            if (((Input.GetKeyDown("k") || Input.GetAxis("Horizontal") > 0) && (dir == Node.Direction.Right) && facing != Node.Direction.Right)
+                || (queuedDirection == Node.Direction.Right) && (dir == Node.Direction.Right))
             {
-                Debug.Log("pressed right");
+                //Debug.Log("pressed right");
 
                 if (!startedMoving)
                 {
+                    Game.instance.StartGame();
                     facing = Node.Direction.Right;
                     startedMoving = true;
                 }
@@ -66,12 +80,13 @@ public class PacMan : MonoBehaviour
                 queuedDirection = Node.Direction.None;
 
             }
-            else if (((Input.GetKeyDown("j") /*|| Input.GetAxis("horizontal") < 0*/) && (dir == Node.Direction.Left) && facing != Node.Direction.Left)
+            else if (((Input.GetKeyDown("j") || Input.GetAxis("Horizontal") < 0) && (dir == Node.Direction.Left) && facing != Node.Direction.Left)
                             || (queuedDirection == Node.Direction.Left) && (dir == Node.Direction.Left))
             {
-                Debug.Log("pressed left");
+                //Debug.Log("pressed left");
                 if (!startedMoving)
                 {
+                    Game.instance.StartGame();
                     facing = Node.Direction.Left;
                     startedMoving = true;
                 }
@@ -88,10 +103,10 @@ public class PacMan : MonoBehaviour
 
 
             }
-            else if (((Input.GetKeyDown("i") /*|| Input.GetAxis("vertical") > 0*/) && (dir == Node.Direction.Up) && facing != Node.Direction.Up)
+            else if (((Input.GetKeyDown("i") || Input.GetAxis("Vertical") > 0) && (dir == Node.Direction.Up) && facing != Node.Direction.Up)
                             || (queuedDirection == Node.Direction.Up) && (dir == Node.Direction.Up))
             {
-                Debug.Log("pressed up");
+                //Debug.Log("pressed up");
 
                 if (inNode && queuedDirection != Node.Direction.None)
                 {
@@ -106,10 +121,10 @@ public class PacMan : MonoBehaviour
 
 
             }
-            else if (((Input.GetKeyDown("m") /*|| Input.GetAxis("vertical") < 0*/) && (dir == Node.Direction.Down) && facing != Node.Direction.Down)
+            else if (((Input.GetKeyDown("m") || Input.GetAxis("Vertical") < 0) && (dir == Node.Direction.Down) && facing != Node.Direction.Down)
                             || (queuedDirection == Node.Direction.Down) && (dir == Node.Direction.Down))
             {
-                Debug.Log("pressed down");
+                //Debug.Log("pressed down");
 
                 if (inNode && queuedDirection != Node.Direction.None)
                 {
@@ -130,25 +145,25 @@ public class PacMan : MonoBehaviour
 
     void QueuedDirection()
     {
-        if (Input.GetKeyDown("k") /*|| Input.GetAxis("horizontal") > 0*/ )
+        if (Input.GetKeyDown("k") || Input.GetAxis("Horizontal") > 0 )
         {
+
             queuedDirection = Node.Direction.Right;
 
+        }
+        else if (Input.GetKeyDown("j") || Input.GetAxis("Horizontal") < 0)
+        {
+
+            queuedDirection = Node.Direction.Left;
 
         }
-        else if (Input.GetKeyDown("j") /*|| Input.GetAxis("horizontal") < 0*/)
+        else if (Input.GetKeyDown("i") || Input.GetAxis("Vertical") > 0)
         {
-            
-            queuedDirection = Node.Direction.Left;
-         
-        }
-        else if (Input.GetKeyDown("i") /*|| Input.GetAxis("vertical") > 0*/)
-        {
-            
+
             queuedDirection = Node.Direction.Up;
 
         }
-        else if (Input.GetKeyDown("m") /*|| Input.GetAxis("vertical") < 0*/)
+        else if (Input.GetKeyDown("m") || Input.GetAxis("Vertical") < 0)
         {
             queuedDirection = Node.Direction.Down;
 
@@ -220,7 +235,7 @@ public class PacMan : MonoBehaviour
             {
                 if (facing == tempNode.PortalDirection)
                 {
-                    Debug.Log("Found Portal");
+                    //Debug.Log("Found Portal");
                     transform.position = tempNode.PortalDestination.transform.position;
                     currentNode = tempNode.PortalDestination;
                 }
@@ -229,24 +244,29 @@ public class PacMan : MonoBehaviour
 
             else
             {
-                currentNode = collision.gameObject.GetComponent<Node>();
 
-                //can put hide pellet and increase score here
-                SpriteRenderer sprite = collision.gameObject.GetComponent<SpriteRenderer>();
-                if (sprite)
+                SpriteRenderer oldNode = currentNode.gameObject.GetComponent<SpriteRenderer>();
+                if (oldNode && oldNode.enabled)
                 {
-                    
+                   currentNode.Eat.Stop();
+                }
+                currentNode = collision.gameObject.GetComponent<Node>();
+                SpriteRenderer sprite = collision.gameObject.GetComponent<SpriteRenderer>();
+                //can put hide pellet and increase score here
+                if (sprite && sprite.enabled)
+                {
+                    currentNode.Eat.Play();
                     sprite.enabled = false;
-                    Game.instance.Score += currentNode.Type == Node.NodeType.Pellet? 10:50;
+                    Game.instance.Score += currentNode.Type == Node.NodeType.Pellet ? 10 : 50;
                     if ((currentNode.Type == Node.NodeType.PowerUp) || (currentNode.Type == Node.NodeType.Pellet))
                     {
                         GameBoard.instance.pelletCount--;
                     }
 
-                    if(currentNode.Type == Node.NodeType.PowerUp)
+                    if (currentNode.Type == Node.NodeType.PowerUp)
                     {
-                        Debug.Log("found powerUp");
-                        if(Game.instance.Blinky.CurrentState != Ghost.State.Idle)
+                        //Debug.Log("found powerUp");
+                        if (Game.instance.Blinky.CurrentState != Ghost.State.Idle)
                         {
                             Game.instance.Blinky.BecomeFrightened();
 
@@ -282,33 +302,96 @@ public class PacMan : MonoBehaviour
             Ghost hit = collision.gameObject.GetComponent<Ghost>();
             if (hit.CurrentState == Ghost.State.Chase || hit.CurrentState == Ghost.State.Scatter)
             {
-                Die();
+                StartCoroutine(Die());
             }
-            else if(hit.CurrentState == Ghost.State.Frightened)
+            else if (hit.CurrentState == Ghost.State.Frightened)
             {
+                //play ghost eaten sound
+
                 hit.Die();
+                //display ghost score
+                GameObject ghostScore = Instantiate(Game.instance.ScorePrefab, collision.transform.position, Quaternion.identity);
+                ghostScore.GetComponent<SpriteRenderer>().sprite = Game.instance.GhostScores[ghostsEaten];
+                Destroy(ghostScore, 2);
+                //Debug.Log("Ghosts Eaten: " + ghostsEaten);
+                Game.instance.Score += Game.instance.GhostScoreNums[ghostsEaten];
+                ghostsEaten++;
+
             }
+        }
+
+        if (collision.gameObject.tag == "Fruit")
+        {
+
+            //collision.GetComponent<EatFruit>().Eat.Play(); no need because it plays on awake now
+            //display fruit score
+            GameObject fruitScore = Instantiate(Game.instance.FruitScorePrefab, collision.transform.position, Quaternion.identity);
+            fruitScore.GetComponent<SpriteRenderer>().sprite = Game.instance.FruitScores[Game.instance.LevelToIndex()];
+            Destroy(fruitScore, 2);
+            Game.instance.Score += Game.instance.FruitScoreNums[Game.instance.LevelToIndex()];
+
+            Destroy(collision.gameObject);
+
+        }
+    }
+
+    IEnumerator Die()
+    {
+        //Debug.Log("Got into Die");
+        dead = true;
+        GetComponent<CircleCollider2D>().enabled = false;
+        //play die animation
+        transform.localRotation = Quaternion.Euler(0, 0, 360);
+        float animationLength = 0;
+        Animator.SetBool("Died", true);
+        AnimationClip[] clips = Animator.runtimeAnimatorController.animationClips;
+        foreach(AnimationClip clip in clips)
+        {
+
+            animationLength += clip.length/Animator.speed;
+            //Debug.Log("Clip Length: " + clip.length);
+            
+        }
+        //Debug.Log("Animation Speed: " + Animator.speed);
+        //Debug.Log("Animation Length: " + animationLength);
+
+
+        DeathSound.Play();
+        yield return new WaitForSeconds(animationLength);
+
+        Animator.SetBool("Died", false);
+
+        dead = false;
+        Game.instance.Lives--;
+        Game.instance.LiveImages[Game.instance.Lives].enabled = false;
+
+        //respawn
+        if (Game.instance.Lives != 0)
+        {
+            Respawn();
+        }
+        else
+        {
+            Destroy(gameObject);
         }
 
     }
 
-    private void Die(){
-        Debug.Log("Got into Die");
-        Game.instance.Lives--;
-        //play die animation
-
-
-
-        //respawn
-        Respawn();
-
-        }
-
     public void Respawn()
     {
+        //move the ghosts back to the ghost house
+        StartCoroutine(Game.instance.Blinky.Respawn());
+        StartCoroutine(Game.instance.Pinky.Respawn());
+        StartCoroutine(Game.instance.Inky.Respawn());
+        StartCoroutine(Game.instance.Clyde.Respawn());
+
+
+        startingNode = GameBoard.instance.GameObjects[22, 13].GetComponent<Node>();
+        currentNode = startingNode;
         transform.position = startingNode.transform.position;
+        GetComponent<CircleCollider2D>().enabled = true;
         startedMoving = false;
-        facing = Node.Direction.Right;
+        //facing = Node.Direction.Right;
 
         transform.localRotation = Quaternion.Euler(0, 0, 360);
     }

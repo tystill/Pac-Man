@@ -3,9 +3,11 @@ ScriptsOnlyBuild:
     Assembly-CSharp.dll:
     - Blinky
     - Clyde
+    - EatFruit
     - Game
     - GameBoard
     - Inky
+    - Menu
     - Node
     - PacMan
     - Pinky
@@ -27,8 +29,10 @@ ScriptsOnlyBuild:
     UnityEditor.Graphs.dll:
     - UnityEditor.Graphs.AnimationBlendTree.Graph
     - UnityEditor.Graphs.AnimationBlendTree.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.AnyStateNode
     - UnityEditor.Graphs.AnimationStateMachine.Graph
     - UnityEditor.Graphs.AnimationStateMachine.GraphGUI
+    - UnityEditor.Graphs.AnimationStateMachine.StateNode
     - UnityEditor.Graphs.AnimatorControllerTool
     UnityEditor.TestRunner.dll:
     - UnityEditor.TestTools.TestRunner.Api.CallbacksHolder
@@ -37,12 +41,13 @@ ScriptsOnlyBuild:
     UnityEngine.UI.dll:
     - UnityEngine.EventSystems.EventSystem
     - UnityEngine.EventSystems.StandaloneInputModule
+    - UnityEngine.UI.Button
     - UnityEngine.UI.CanvasScaler
     - UnityEngine.UI.GraphicRaycaster
     - UnityEngine.UI.Image
     - UnityEngine.UI.Text
   sceneClasses:
-    Assets/Scenes/SampleScene.unity:
+    Assets/Scenes/Game.unity:
     - Class: 1
       Script: {instanceID: 0}
     - Class: 4
@@ -50,6 +55,8 @@ ScriptsOnlyBuild:
     - Class: 20
       Script: {instanceID: 0}
     - Class: 21
+      Script: {instanceID: 0}
+    - Class: 23
       Script: {instanceID: 0}
     - Class: 28
       Script: {instanceID: 0}
@@ -65,6 +72,87 @@ ScriptsOnlyBuild:
       Script: {instanceID: 0}
     - Class: 81
       Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
+    - Class: 91
+      Script: {instanceID: 0}
+    - Class: 95
+      Script: {instanceID: 0}
+    - Class: 102
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 11826}
+    - Class: 114
+      Script: {instanceID: 11848}
+    - Class: 114
+      Script: {instanceID: 12114}
+    - Class: 114
+      Script: {instanceID: 12148}
+    - Class: 114
+      Script: {instanceID: 12192}
+    - Class: 114
+      Script: {instanceID: 12208}
+    - Class: 114
+      Script: {instanceID: 12650}
+    - Class: 114
+      Script: {instanceID: 12846}
+    - Class: 114
+      Script: {instanceID: 12950}
+    - Class: 114
+      Script: {instanceID: 14082}
+    - Class: 114
+      Script: {instanceID: 14616}
+    - Class: 114
+      Script: {instanceID: 14642}
+    - Class: 114
+      Script: {instanceID: 15278}
+    - Class: 114
+      Script: {instanceID: 15358}
+    - Class: 114
+      Script: {instanceID: 33024}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 196
+      Script: {instanceID: 0}
+    - Class: 212
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
+    Assets/Scenes/Menu.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 74
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 82
+      Script: {instanceID: 0}
+    - Class: 83
+      Script: {instanceID: 0}
     - Class: 91
       Script: {instanceID: 0}
     - Class: 95
@@ -72,33 +160,21 @@ ScriptsOnlyBuild:
     - Class: 104
       Script: {instanceID: 0}
     - Class: 114
-      Script: {instanceID: 11822}
+      Script: {instanceID: 11826}
     - Class: 114
-      Script: {instanceID: 11844}
+      Script: {instanceID: 12148}
     - Class: 114
-      Script: {instanceID: 12102}
+      Script: {instanceID: 12208}
     - Class: 114
-      Script: {instanceID: 12134}
+      Script: {instanceID: 12950}
     - Class: 114
-      Script: {instanceID: 12176}
+      Script: {instanceID: 13760}
     - Class: 114
-      Script: {instanceID: 12190}
+      Script: {instanceID: 14616}
     - Class: 114
-      Script: {instanceID: 12612}
+      Script: {instanceID: 15196}
     - Class: 114
-      Script: {instanceID: 12800}
-    - Class: 114
-      Script: {instanceID: 12900}
-    - Class: 114
-      Script: {instanceID: 13982}
-    - Class: 114
-      Script: {instanceID: 14498}
-    - Class: 114
-      Script: {instanceID: 14524}
-    - Class: 114
-      Script: {instanceID: 15134}
-    - Class: 114
-      Script: {instanceID: 15212}
+      Script: {instanceID: 15278}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 128
@@ -126,7 +202,7 @@ ScriptsOnlyBuild:
     className: CanvasScaler
   - hash:
       serializedVersion: 2
-      Hash: 2f3fcce9287057be8c513020cdeea435
+      Hash: 4ae9b7bf0fa517bf2d52d2bcaa089657
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Game
@@ -162,13 +238,19 @@ ScriptsOnlyBuild:
     className: PlayerQuitHandler
   - hash:
       serializedVersion: 2
+      Hash: 04e4a8b0447477cc4e933d9e5311188f
+    assemblyName: UnityEngine.XR.LegacyInputHelpers.dll
+    namespaceName: UnityEngine.XR.LegacyInputHelpers
+    className: ArmModel
+  - hash:
+      serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: GroupTrack
   - hash:
       serializedVersion: 2
-      Hash: 28084f014ea0d39e5b5fe59fe028e9d7
+      Hash: e1f2b8008c0a552d51e1a10b9a39d86f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Pinky
@@ -204,10 +286,16 @@ ScriptsOnlyBuild:
     className: TouchInputModule
   - hash:
       serializedVersion: 2
-      Hash: 28084f014ea0d39e5b5fe59fe028e9d7
+      Hash: c8515351455fcb4e15957a48df367fd4
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Inky
+  - hash:
+      serializedVersion: 2
+      Hash: 98aa0a0c8ff2910eb12af89c7e0eb661
+    assemblyName: Unity.XR.Management.dll
+    namespaceName: UnityEngine.XR.Management
+    className: XRGeneralSettings
   - hash:
       serializedVersion: 2
       Hash: a6e561615949734e9f12f9b61661f43e
@@ -312,6 +400,12 @@ ScriptsOnlyBuild:
     className: PixelPerfectCamera
   - hash:
       serializedVersion: 2
+      Hash: 52bcb9c2a78bdd8d98a59e915c346e75
+    assemblyName: UnityEngine.XR.LegacyInputHelpers.dll
+    namespaceName: UnityEngine.XR.LegacyInputHelpers
+    className: TransitionArmModel
+  - hash:
+      serializedVersion: 2
       Hash: d4bd6e165121adc7f4172653f4013ae5
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
@@ -330,13 +424,19 @@ ScriptsOnlyBuild:
     className: Mask
   - hash:
       serializedVersion: 2
+      Hash: d251bf88db6c95a6b1aa0b69298da9ef
+    assemblyName: UnityEngine.SpatialTracking.dll
+    namespaceName: UnityEngine.SpatialTracking
+    className: TrackedPoseDriver
+  - hash:
+      serializedVersion: 2
       Hash: caa533b001ae39b864ba8425019e2268
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: Shadow
   - hash:
       serializedVersion: 2
-      Hash: e2f4bae0a3a3843fe723633172fc4766
+      Hash: bdb2b723c77103652cc026b0e71bd2b6
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Node
@@ -382,12 +482,6 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.UI
     className: Selectable
-  - hash:
-      serializedVersion: 2
-      Hash: 28084f014ea0d39e5b5fe59fe028e9d7
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: Ghost
   - hash:
       serializedVersion: 2
       Hash: 040dd48e3a027d5424519a5fa2009df4
@@ -450,7 +544,7 @@ ScriptsOnlyBuild:
     className: SpriteSkin
   - hash:
       serializedVersion: 2
-      Hash: 28084f014ea0d39e5b5fe59fe028e9d7
+      Hash: e1f2b8008c0a552d51e1a10b9a39d86f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Blinky
@@ -498,12 +592,6 @@ ScriptsOnlyBuild:
     className: ActivationPlayableAsset
   - hash:
       serializedVersion: 2
-      Hash: bef34b8f71e1d97349615f45bc3f6f03
-    assemblyName: Assembly-CSharp.dll
-    namespaceName: 
-    className: Portal
-  - hash:
-      serializedVersion: 2
       Hash: 18c222bef9ae745ce69ddde9b74337ca
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
@@ -514,6 +602,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: TimelineAsset
+  - hash:
+      serializedVersion: 2
+      Hash: 24c74cc0d527a06113f2b967042769f0
+    assemblyName: UnityEngine.XR.LegacyInputHelpers.dll
+    namespaceName: UnityEditor.XR.LegacyInputHelpers
+    className: CameraOffset
   - hash:
       serializedVersion: 2
       Hash: 760787567e1b60d64a3e421ab83ee14a
@@ -534,7 +628,7 @@ ScriptsOnlyBuild:
     className: GraphicRaycaster
   - hash:
       serializedVersion: 2
-      Hash: 28084f014ea0d39e5b5fe59fe028e9d7
+      Hash: e1f2b8008c0a552d51e1a10b9a39d86f
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: Clyde
@@ -544,6 +638,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestTools
     className: BeforeAfterTestCommandState
+  - hash:
+      serializedVersion: 2
+      Hash: 893dbdbfe611d62e230a686ea89f1efd
+    assemblyName: UnityEngine.XR.LegacyInputHelpers.dll
+    namespaceName: UnityEngine.XR.LegacyInputHelpers
+    className: SwingArmModel
   - hash:
       serializedVersion: 2
       Hash: c3d3430df9e3ea95e3e3d587961390fb
@@ -588,6 +688,12 @@ ScriptsOnlyBuild:
     className: Outline
   - hash:
       serializedVersion: 2
+      Hash: 8daace3e53f91f1c3a9e97258617c45b
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: Menu
+  - hash:
+      serializedVersion: 2
       Hash: 134322c9293c1896357cce271b819ce4
     assemblyName: UnityEngine.UI.dll
     namespaceName: UnityEngine.EventSystems
@@ -604,6 +710,12 @@ ScriptsOnlyBuild:
     assemblyName: UnityEngine.TestRunner.dll
     namespaceName: UnityEngine.TestRunner.Utils
     className: TestRunCallbackListener
+  - hash:
+      serializedVersion: 2
+      Hash: 8ab9295d94483c961936d82d233d3df2
+    assemblyName: Unity.XR.Management.dll
+    namespaceName: UnityEngine.XR.Management
+    className: XRManagerSettings
   - hash:
       serializedVersion: 2
       Hash: c60c5cba0d5ed4f4a018240d6339217f
@@ -642,7 +754,7 @@ ScriptsOnlyBuild:
     className: Slider
   - hash:
       serializedVersion: 2
-      Hash: 81e93b94f7823c4bb1a1ab61d061e6b8
+      Hash: 30f03be0c46c73d346901a7e90269f7c
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PacMan
@@ -660,47 +772,12 @@ ScriptsOnlyBuild:
     className: PlayableTrack
   - hash:
       serializedVersion: 2
-      Hash: 04e4a8b0447477cc4e933d9e5311188f
-    assemblyName: UnityEngine.XR.LegacyInputHelpers.dll
-    namespaceName: UnityEngine.XR.LegacyInputHelpers
-    className: ArmModel
-  - hash:
-      serializedVersion: 2
-      Hash: 98aa0a0c8ff2910eb12af89c7e0eb661
-    assemblyName: Unity.XR.Management.dll
-    namespaceName: UnityEngine.XR.Management
-    className: XRGeneralSettings
-  - hash:
-      serializedVersion: 2
-      Hash: 52bcb9c2a78bdd8d98a59e915c346e75
-    assemblyName: UnityEngine.XR.LegacyInputHelpers.dll
-    namespaceName: UnityEngine.XR.LegacyInputHelpers
-    className: TransitionArmModel
-  - hash:
-      serializedVersion: 2
-      Hash: d251bf88db6c95a6b1aa0b69298da9ef
-    assemblyName: UnityEngine.SpatialTracking.dll
-    namespaceName: UnityEngine.SpatialTracking
-    className: TrackedPoseDriver
-  - hash:
-      serializedVersion: 2
-      Hash: 24c74cc0d527a06113f2b967042769f0
-    assemblyName: UnityEngine.XR.LegacyInputHelpers.dll
-    namespaceName: UnityEditor.XR.LegacyInputHelpers
-    className: CameraOffset
-  - hash:
-      serializedVersion: 2
-      Hash: 893dbdbfe611d62e230a686ea89f1efd
-    assemblyName: UnityEngine.XR.LegacyInputHelpers.dll
-    namespaceName: UnityEngine.XR.LegacyInputHelpers
-    className: SwingArmModel
-  - hash:
-      serializedVersion: 2
-      Hash: 8ab9295d94483c961936d82d233d3df2
-    assemblyName: Unity.XR.Management.dll
-    namespaceName: UnityEngine.XR.Management
-    className: XRManagerSettings
+      Hash: 6d154e7ae3350413652557f0a610819e
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: EatFruit
   platform: 5
   scenePathNames:
-  - Assets/Scenes/SampleScene.unity
+  - Assets/Scenes/Menu.unity
+  - Assets/Scenes/Game.unity
   playerPath: C:/Users/Ty Still/Desktop/ECE 194M work/Pac-Man Build/Unity Pac-Man.exe
